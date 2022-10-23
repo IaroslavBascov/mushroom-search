@@ -33,11 +33,11 @@ def learna(array1,array2,nevro,r,g,b):
         for jj in range(math.floor(len(array1[0])/4)):
             for ax in range(0,4):
                 for bx in range(0,4):
-                    if isinstance(array2[ii*4+ax][jj*4+bx],int)==True:
+                    if isinstance(array2[ii*4+ax][jj*4+bx],numbers.Number)==True:
                         ar=array2[ii*4+ax][jj*4+bx]
                     else:
                         ar=int(array2[ii*4+ax][jj*4+bx][0])
-                    if isinstance(array1[ii*4+ax][jj*4+bx],int)==False:
+                    if isinstance(array1[ii*4+ax][jj*4+bx],numbers.Number)==False:
                         red=array1[ii*4+ax][jj*4+bx][0]*b+array1[ii*4+ax][jj*4+bx][1]*g+array1[ii*4+ax][jj*4+bx][2]*r
                     else:
                         red=array1[ii*4+ax][jj*4+bx]
@@ -91,6 +91,6 @@ while True:
     le2=use(Neu,real,r,g,b)
     Neu2=learna(le,le2,Neu2,r,g,b)
     result=le
-    #result=use(Neu2,result,r,g,b)
-    cv2.imshow("image1", np.array(result, dtype=np.uint8))
+    result=use(Neu2,result,r,g,b)
+    cv2.imshow("image1", cv2.resize(np.array(result, dtype=np.uint8),(200,200),interpolation=cv2.INTER_AREA))
     print("OK")
