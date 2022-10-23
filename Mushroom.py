@@ -47,7 +47,7 @@ def learna(array1,array2,nevro,r,g,b):
         red2=array2[:,:,0]*b+array2[:,:,1]*g+array2[:,:,2]*r
     else:
         red2=array2
-    neuu+=(red+red2-neuu*255)/100000
+    neuu+=(red2-red-neuu.mean(0).mean(0)*255)/100000
     neuu=neuu.reshape(la40,la41,4,4).mean(0).mean(0)
     return neuu.tolist()
 
@@ -93,16 +93,27 @@ cv2.imshow("image1", cv2.resize(np.array(result, dtype=np.uint8),(200,200),inter
 while True:
     cv2.waitKey(0) 
     clear()
+    print("0%")
     r=learnc(img,real,r,2,r,g,b)
     g=learnc(img,real,g,1,r,g,b)
     b=learnc(img,real,b,0,r,g,b)
     Neu=learna(img,real,Neu,r,g,b)
+    clear()
+    print("20%")
     le=use(Neu,img,r,g,b)
+    clear()
+    print("40%")
     le2=use(Neu,real,r,g,b)
+    clear()
+    print("60%")
     Neu2=learna(le,le2,Neu2,r,g,b)
+    clear()
+    print("80%")
     Neu3=learna(use(Neu2,le,r,g,b),use(Neu2,le2,r,g,b),Neu2,r,g,b)
     result=le
     result=use(Neu2,result,r,g,b)
+    clear()
+    print("100%")
     result=use(Neu3,result,r,g,b)
     cv2.imshow("image1", cv2.resize(np.array(result, dtype=np.uint8),(200,200),interpolation=cv2.INTER_AREA))
     print("OK")
