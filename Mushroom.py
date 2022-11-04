@@ -8,9 +8,9 @@ import numbers
 os.chdir(os.path.dirname(sys.argv[0]))
 img = cv2.imread("img/image.jpg")
 real =cv2.imread("img/real.jpg")
-cv2.imshow("image2", cv2.resize(img,(200,200)))
 cv2.namedWindow("image2", cv2.WINDOW_NORMAL)  
 cv2.namedWindow("image1", cv2.WINDOW_NORMAL)  
+cv2.imshow("image2", cv2.resize(img,(200,200)))
 r=1/3
 g=1/3
 b=1/3
@@ -18,7 +18,7 @@ clear = lambda: os.system('cls')
 def learnc(array1,array2,c,n,r,g,b):
     red=np.array(array1)[:,:,n]
     ar2=np.array(array2)[:,:,0]
-    c+=red*(ar2-(r+g+b)*255)/500000
+    c+=(red-255/2)*(ar2-(r+g+b)*255+255)/2000
     c=np.average(c)
     return c
 
@@ -47,7 +47,9 @@ def learna(array1,array2,nevro,r,g,b):
         red2=array2[:,:,0]*b+array2[:,:,1]*g+array2[:,:,2]*r
     else:
         red2=array2
-    neuu+=(red2-red-neuu.mean(0).mean(0)*255)/100000
+    nean=neuu.mean(0).mean(0)
+    xxx=(red*red2-(nean*256/2)**2*np.where(nean<0,-1,1)+255)
+    neuu+=np.where(xxx<0,-0.01,0.01)
     neuu=neuu.reshape(la40,la41,4,4).mean(0).mean(0)
     return neuu.tolist()
 
@@ -68,23 +70,23 @@ def use(neuro,array,r,g,b):
         unknow+=(ar[:,:,0]*b + ar[:,:,1]*g + ar[:,:,2]*r)*neuu
     else:
         unknow+=(ar[:,:])*neuu
-    unknow*=16
+    unknow*=8
     unknow=np.where(unknow>255,255,unknow)
     unknow=np.where(unknow<0,0,unknow)
     unknow=rebin(unknow,(la40,la41))
     return unknow
-Neu=[[1/16,1/16,1/16,1/16]
-    ,[1/16,1/16,1/16,1/16]
-    ,[1/16,1/16,1/16,1/16]
-    ,[1/16,1/16,1/16,1/16]]
-Neu2=[[1/16,1/16,1/16,1/16]
-    ,[1/16,1/16,1/16,1/16]
-    ,[1/16,1/16,1/16,1/16]
-    ,[1/16,1/16,1/16,1/16]]
-Neu3=[[1/16,1/16,1/16,1/16]
-    ,[1/16,1/16,1/16,1/16]
-    ,[1/16,1/16,1/16,1/16]
-    ,[1/16,1/16,1/16,1/16]]
+Neu=[[0.15,0.15,0.15,0.15]
+    ,[0.15,0.15,0.15,0.15]
+    ,[0.15,0.15,0.15,0.15]
+    ,[0.15,0.15,0.15,0.15]]
+Neu2=[[0.15,0.15,0.15,0.15]
+    ,[0.15,0.15,0.15,0.15]
+    ,[0.15,0.15,0.15,0.15]
+    ,[0.15,0.15,0.15,0.15]]
+Neu3=[[0.15,0.15,0.15,0.15]
+    ,[0.15,0.15,0.15,0.15]
+    ,[0.15,0.15,0.15,0.15]
+    ,[0.15,0.15,0.15,0.15]]
 result=use(Neu,img,r,g,b)
 result=use(Neu2,result,r,g,b)
 result=use(Neu3,result,r,g,b)
@@ -117,3 +119,9 @@ while True:
     result=use(Neu3,result,r,g,b)
     cv2.imshow("image1", cv2.resize(np.array(result, dtype=np.uint8),(200,200),interpolation=cv2.INTER_AREA))
     print("OK")
+    print(Neu)
+    print(Neu2)
+    print(Neu3)
+    print(r)
+    print(g)
+    print(b)
